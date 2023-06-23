@@ -4,6 +4,7 @@ import React from 'react'
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+import axios from 'axios';
 
 const SignUp = () => {
 
@@ -49,8 +50,14 @@ const SignUp = () => {
   const handelSignUp = (data) => {
     validationSchema
       .validate(data, { abortEarly: false })
-      .then((data) => {
-        console.log(data);
+        .then(async(formData) => {
+        const data = await axios.post(
+          "agent_eighth_step/",
+          formData
+        );
+        if (data.status >= 200 && data.status < 300) {
+          navigate("/signin");
+        }
       })
       .catch((validationErrors) => {
         const errorMessages = validationErrors.inner.reduce(

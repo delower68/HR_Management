@@ -49,11 +49,17 @@ const password_reset = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const handelSignUp = (data) => {
+  const handelResetPassword = (data) => {
     validationSchema
       .validate(data, { abortEarly: false })
-      .then((data) => {
-        console.log(data);
+      .then(async(formData) => {
+        const data = await axios.post(
+          "agent_eighth_step/",
+          formData
+        );
+        if (data.status >= 200 && data.status < 300) {
+          navigate("/signin");
+        }
       })
       .catch((validationErrors) => {
         const errorMessages = validationErrors.inner.reduce(
@@ -77,7 +83,7 @@ const password_reset = () => {
               Change Password
           </h2>
           <form
-           onSubmit={handleSubmit(handelSignUp)}
+           onSubmit={handleSubmit(handelResetPassword)}
 
             className="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="#">
               <div>
@@ -123,7 +129,7 @@ const password_reset = () => {
                  <button
               value="Reset password"
               type="submit"
-              onClick={() => handleSubmit(handelSignUp)}
+              onClick={() => handleSubmit(handelResetPassword)}
             className="w-full text-white bg-blue-300 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center my-3 " >Reset password</button>
           </form>
       </div>

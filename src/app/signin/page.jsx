@@ -33,16 +33,22 @@ const SignIn = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors },  
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
-  const handelSignUp = (data) => {
+  const handelSignIn = (data) => {
     validationSchema
       .validate(data, { abortEarly: false })
-      .then((data) => {
-        console.log(data);
+      .then(async(formData) => {
+        const data = await axios.post(
+          "agent_eighth_step/",
+          formData
+        );
+        if (data.status >= 200 && data.status < 300) {
+          navigate("/dashboard");
+        }
       })
       .catch((validationErrors) => {
         const errorMessages = validationErrors.inner.reduce(
@@ -62,7 +68,7 @@ const SignIn = () => {
     <div class="container px-4 mx-auto">
       <div class="max-w-3xl mx-auto">
         <h2 class="font-heading mb-4 text-6xl text-white tracking-tighter">Welcome to your account</h2>
-        <form onSubmit={handleSubmit(handelSignUp)} class="flex flex-wrap -m-3" action="#">
+        <form onSubmit={handleSubmit(handelSignIn)} class="flex flex-wrap -m-3" action="#">
           
           <div class="w-full  p-3">
           <label for="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
@@ -89,7 +95,7 @@ const SignIn = () => {
           <div class="w-full p-3">
             <button value="Sign Up"
               type="submit"
-              onClick={() => handleSubmit(handelSignUp)} className="w-full text-white bg-blue-300 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-3" href="#">Log In</button>
+              onClick={() => handleSubmit(handelSignIn)} className="w-full text-white bg-blue-300 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-3" href="#">Log In</button>
             <span class="font-medium text-white tracking-tight">
               <span>Don't have any account?  </span>
               <Link class="text-red-500 hover:text-red-700 transition duration-200 ml-1" href='/signup'> Sign Up</Link>
